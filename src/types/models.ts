@@ -23,5 +23,6 @@ export interface IComment {
   user: {
     id: string;
     username: string;
+    image?: string;
   };
 }
