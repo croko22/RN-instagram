@@ -5,6 +5,7 @@ const colors = {
   gray: "#666666",
   lightGray: "#cccccc",
   red: "#ed4956",
+  error: "#ed4956",
   border: "#dcdcdc",
 };
 
