@@ -3,10 +3,18 @@ import user from "../../assets/data/user.json";
 import FeedGridView from "../../components/FeedGridView/FeedGridView";
 import ProfileHeader from "./ProfileHeader";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  MyProfileNavigationProp,
+  MyProfileRouteProp,
+  UserProfileNavigationProp,
+  UserProfileRouteProp,
+} from "../../navigation/types";
 
 const ProfileScreen = () => {
-  const route = useRoute();
-  const navigation = useNavigation();
+  const route = useRoute<UserProfileRouteProp | MyProfileRouteProp>();
+  const navigation = useNavigation<
+    UserProfileNavigationProp | MyProfileNavigationProp
+  >();
   //* Is better to send an identifier than the whole object
   const userID = route.params?.userID;
   // const user = users.find((user) => user.id === userID);

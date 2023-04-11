@@ -4,9 +4,10 @@ import styles from "./styles";
 import FeedPost from "../../components/FeedPost";
 import user from "../../assets/data/user.json";
 import { useNavigation } from "@react-navigation/native";
+import { ProfileNavigationProp } from "../../navigation/types";
 
 const ProfileHeader = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ProfileNavigationProp>();
   return (
     <View style={styles.root}>
       <View style={styles.headerRow}>

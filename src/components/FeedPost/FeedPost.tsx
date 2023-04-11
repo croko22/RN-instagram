@@ -13,6 +13,7 @@ import { useState } from "react";
 import Carousel from "../Carousel";
 import VideoPlayer from "../VideoPlayer";
 import { useNavigation } from "@react-navigation/native";
+import { FeedNavigationProp } from "../../navigation/types";
 
 interface IFeedPost {
   post: IPost;
@@ -22,7 +23,7 @@ interface IFeedPost {
 const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<FeedNavigationProp>();
 
   //? There are two ways to navigate to a screen, navigate and push (navigate is the preferred way)
   const navigateToUser = () => {
