@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { View, Text, StyleSheet, Image, TextInput } from "react-native";
 import { useForm, Controller, Control } from "react-hook-form";
+import * as ImagePicker from "expo-image-picker";
 import user from "../../assets/data/user.json";
 import colors from "../../theme/colors";
 import fonts from "../../theme/fonts";
 import { IUser } from "../../types/models";
 
+//*FORM
 const URL_REGEX = /^(ftp|http|https):\/\/[^ "]+$/;
 
 type IEditableUserFields = "name" | "username" | "website" | "bio";
@@ -73,10 +76,29 @@ const EditProfileScreen = () => {
   const onSubmit = (data: IEditableUser) => {
     console.warn("Submit", data);
   };
+
+  //*IMAGE PICKER
+  const [image, setImage] = useState(user.image);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    // console.log(result);
+
+    if (!result.canceled) setImage(result.assets[0].uri);
+  };
+
   return (
     <View style={styles.page}>
-      <Image source={{ uri: user.image }} style={styles.avatar} />
-      <Text style={styles.textButton}>EditProfileScreen</Text>
+      <Image source={{ uri: image }} style={styles.avatar} />
+      <Text style={styles.textButton} onPress={pickImage}>
+        EditProfileScreen
+      </Text>
 
       <CustomInput
         control={control}
