@@ -10,8 +10,9 @@ const size = {
   xxlg: 30,
 };
 
-const weight: {[key: string]: TextStyle["fontWeight"]} = {
+const weight: { [key: string]: TextStyle["fontWeight"] } = {
   full: "900",
+  semi: "600",
   bold: "bold",
   normal: "normal",
   thin: "400",
