@@ -13,8 +13,12 @@ export interface IPost {
 
 export interface IUser {
   id: string;
-  image: string;
   username: string;
+  image?: string;
+  name: string;
+  bio?: string;
+  posts: IPost[];
+  website?: string;
 }
 
 export interface IComment {
