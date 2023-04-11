@@ -8,7 +8,7 @@ const ProfileScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   //* Is better to send an identifier than the whole object
-  const { userID } = route.params;
+  const userID = route.params?.userID;
   // const user = users.find((user) => user.id === userID);
   //*Query the user
 
