@@ -11,6 +11,7 @@ const Stack = createNativeStackNavigator();
 const Navigation = () => {
   return (
     <NavigationContainer>
+      {/* Screens are stacked on top of each other */}
       <Stack.Navigator initialRouteName="Feed">
         <Stack.Screen
           name="Feed"

@@ -12,6 +12,7 @@ import { IPost } from "../../types/models";
 import { useState } from "react";
 import Carousel from "../Carousel";
 import VideoPlayer from "../VideoPlayer";
+import { useNavigation } from "@react-navigation/native";
 
 interface IFeedPost {
   post: IPost;
@@ -21,6 +22,12 @@ interface IFeedPost {
 const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const navigation = useNavigation();
+
+  //? There are two ways to navigate to a screen, navigate and push (navigate is the preferred way)
+  const navigateToUser = () => {
+    navigation.navigate("UserProfile", { userID: post.user.id });
+  };
 
   let content = null;
   if (post.image) {
@@ -49,7 +56,9 @@ const FeedPost = ({ post, isVisible }: IFeedPost) => {
       {/* Header */}
       <View style={styles.header}>
         <Image source={{ uri: post.user.image }} style={styles.userAvatar} />
-        <Text style={styles.userName}>{post.user.username}</Text>
+        <Text onPress={navigateToUser} style={styles.userName}>
+          {post.user.username}
+        </Text>
         <Entypo
           name="dots-three-horizontal"
           size={20}

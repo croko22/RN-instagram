@@ -3,8 +3,10 @@ import Button from "../../components/Button";
 import styles from "./styles";
 import FeedPost from "../../components/FeedPost";
 import user from "../../assets/data/user.json";
+import { useNavigation } from "@react-navigation/native";
 
 const ProfileHeader = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.root}>
       <View style={styles.headerRow}>
@@ -35,7 +37,7 @@ const ProfileHeader = () => {
           text="Edit Profile"
           onPress={() => console.warn("Editing profile")}
         />
-        <Button text="Dummy Button" onPress={() => console.warn("Dummy")} />
+        <Button text="Dummy Button" onPress={() => navigation.goBack()} />
       </View>
     </View>
   );
