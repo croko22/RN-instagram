@@ -10,10 +10,39 @@ import Comment from "../Comment";
 import DoublePressable from "../DoublePressable";
 import { IPost } from "../../types/models";
 import { useState } from "react";
+import Carousel from "../Carousel";
+import VideoPlayer from "../VideoPlayer";
 
-const FeedPost = ({ post }: IPost) => {
+interface IFeedPost {
+  post: IPost;
+  isVisible: boolean;
+}
+
+const FeedPost = ({ post, isVisible }: IFeedPost) => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+
+  let content = null;
+  if (post.image) {
+    content = (
+      <DoublePressable onDoublePress={() => setIsLiked(!isLiked)}>
+        <Image source={{ uri: post.image }} style={styles.image} />
+      </DoublePressable>
+    );
+  } else if (post.images) {
+    content = (
+      <Carousel
+        images={post.images}
+        onDoublePress={() => setIsLiked(!isLiked)}
+      />
+    );
+  } else if (post.video) {
+    content = (
+      <DoublePressable onDoublePress={() => setIsLiked(!isLiked)}>
+        <VideoPlayer uri={post.video} paused={!isVisible} />
+      </DoublePressable>
+    );
+  }
 
   return (
     <View style={styles.post}>
@@ -28,9 +57,8 @@ const FeedPost = ({ post }: IPost) => {
         />
       </View>
       {/* Content */}
-      <DoublePressable onDoublePress={() => setIsLiked(!isLiked)}>
-        <Image source={{ uri: post.image }} style={styles.image} />
-      </DoublePressable>
+
+      {content}
       {/* Footer */}
       <View style={styles.footer}>
         <View style={styles.iconContainer}>

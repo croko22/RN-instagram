@@ -1,16 +1,14 @@
 export interface IPost {
-  post: {
-    id: string;
-    createdAt: string;
-    image?: string;
-    images?: string[];
-    video?: string;
-    description: string;
-    user: IUser;
-    nofComments: number;
-    nofLikes: number;
-    comments: IComment[];
-  };
+  id: string;
+  createdAt: string;
+  image?: string;
+  images?: string[];
+  video?: string;
+  description: string;
+  user: IUser;
+  nofComments: number;
+  nofLikes: number;
+  comments: IComment[];
 }
 
 export interface IUser {
