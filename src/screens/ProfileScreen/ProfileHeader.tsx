@@ -1,8 +1,8 @@
 import { View, Text, Image } from "react-native";
-import Button from "../../components/Button";
+import { Auth } from "aws-amplify";
 import styles from "./styles";
-import FeedPost from "../../components/FeedPost";
 import user from "../../assets/data/user.json";
+import Button from "../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { ProfileNavigationProp } from "../../navigation/types";
 
@@ -38,7 +38,7 @@ const ProfileHeader = () => {
           text="Edit Profile"
           onPress={() => navigation.navigate("Edit Profile")}
         />
-        <Button text="Dummy Button" onPress={() => navigation.goBack()} />
+        <Button text="Sign Out" onPress={() => Auth.signOut()} />
       </View>
     </View>
   );
