@@ -1,15 +1,16 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import FormInput from '../components/FormInput';
-import CustomButton from '../components/CustomButton';
-import SocialSignInButtons from '../components/SocialSignInButtons';
-import {useNavigation} from '@react-navigation/core';
-import {useForm} from 'react-hook-form';
+import React, { useState } from "react";
+import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
+import FormInput from "../components/FormInput";
+import CustomButton from "../components/CustomButton";
+import SocialSignInButtons from "../components/SocialSignInButtons";
+import { useNavigation } from "@react-navigation/core";
+import { useForm } from "react-hook-form";
 import {
   ConfirmEmailNavigationProp,
   ConfirmEmailRouteProp,
-} from '../../../types/navigation';
-import {useRoute} from '@react-navigation/native';
+} from "../../../types/navigation";
+import { useRoute } from "@react-navigation/native";
+import { Auth } from "aws-amplify";
 
 type ConfirmEmailData = {
   username: string;
@@ -18,23 +19,39 @@ type ConfirmEmailData = {
 
 const ConfirmEmailScreen = () => {
   const route = useRoute<ConfirmEmailRouteProp>();
-  const {control, handleSubmit} = useForm<ConfirmEmailData>({
-    defaultValues: {username: route.params.username},
+  const { control, handleSubmit, watch } = useForm<ConfirmEmailData>({
+    defaultValues: { username: route.params.username },
   });
+  const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation<ConfirmEmailNavigationProp>();
 
-  const onConfirmPressed = (data: ConfirmEmailData) => {
-    console.warn(data);
-    navigation.navigate('Sign in');
+  const username = watch("username");
+
+  const onConfirmPressed = async (data: ConfirmEmailData) => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      await Auth.confirmSignUp(data.username, data.code);
+      navigation.navigate("Sign in");
+    } catch (error) {
+      Alert.alert("Oooops", (error as Error).message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onSignInPress = () => {
-    navigation.navigate('Sign in');
+    navigation.navigate("Sign in");
   };
 
-  const onResendPress = () => {
-    console.warn('onResendPress');
+  const onResendPress = async () => {
+    try {
+      await Auth.resendSignUp(username);
+      Alert.alert("Success", "Confirmation code resent successfully");
+    } catch (error) {
+      Alert.alert("Oooops", (error as Error).message);
+    }
   };
 
   return (
@@ -47,7 +64,7 @@ const ConfirmEmailScreen = () => {
           control={control}
           placeholder="Username"
           rules={{
-            required: 'Username is required',
+            required: "Username is required",
           }}
         />
 
@@ -56,11 +73,14 @@ const ConfirmEmailScreen = () => {
           control={control}
           placeholder="Enter your confirmation code"
           rules={{
-            required: 'Confirmation code is required',
+            required: "Confirmation code is required",
           }}
         />
 
-        <CustomButton text="Confirm" onPress={handleSubmit(onConfirmPressed)} />
+        <CustomButton
+          text={loading ? "Confirming..." : "Confirm"}
+          onPress={handleSubmit(onConfirmPressed)}
+        />
 
         <CustomButton
           text="Resend code"
@@ -80,21 +100,21 @@ const ConfirmEmailScreen = () => {
 
 const styles = StyleSheet.create({
   root: {
-    alignItems: 'center',
+    alignItems: "center",
     padding: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#051C60',
+    fontWeight: "bold",
+    color: "#051C60",
     margin: 10,
   },
   text: {
-    color: 'gray',
+    color: "gray",
     marginVertical: 10,
   },
   link: {
-    color: '#FDB075',
+    color: "#FDB075",
   },
 });
 

@@ -9,10 +9,8 @@
           "SMS"
         ],
         "passwordProtectionSettings": {
-          "passwordPolicyCharacters": [
-            "REQUIRES_LOWERCASE"
-          ],
-          "passwordPolicyMinLength": 8
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 6
         },
         "signupAttributes": [
           "PREFERRED_USERNAME",
@@ -20,9 +18,7 @@
           "NAME"
         ],
         "socialProviders": [],
-        "usernameAttributes": [
-          "EMAIL"
-        ],
+        "usernameAttributes": [],
         "verificationMechanisms": [
           "EMAIL"
         ]

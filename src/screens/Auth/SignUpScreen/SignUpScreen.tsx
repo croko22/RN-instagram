@@ -1,11 +1,13 @@
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import FormInput from '../components/FormInput';
-import CustomButton from '../components/CustomButton';
-import SocialSignInButtons from '../components/SocialSignInButtons';
-import {useNavigation} from '@react-navigation/core';
-import {useForm} from 'react-hook-form';
-import {SignUpNavigationProp} from '../../../types/navigation';
-import colors from '../../../theme/colors';
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import FormInput from "../components/FormInput";
+import CustomButton from "../components/CustomButton";
+import SocialSignInButtons from "../components/SocialSignInButtons";
+import { useNavigation } from "@react-navigation/core";
+import { useForm } from "react-hook-form";
+import { SignUpNavigationProp } from "../../../types/navigation";
+import colors from "../../../theme/colors";
+import { Auth } from "aws-amplify";
+import { useState } from "react";
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -21,24 +23,43 @@ type SignUpData = {
 };
 
 const SignUpScreen = () => {
-  const {control, handleSubmit, watch} = useForm<SignUpData>();
-  const pwd = watch('password');
+  const { control, handleSubmit, watch } = useForm<SignUpData>();
+  const pwd = watch("password");
   const navigation = useNavigation<SignUpNavigationProp>();
+  const [loading, setLoading] = useState(false);
 
-  const onRegisterPressed = ({name, email, username, password}: SignUpData) => {
-    navigation.navigate('Confirm email', {username});
+  const onRegisterPressed = async ({
+    name,
+    email,
+    username,
+    password,
+  }: SignUpData) => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      const response = await Auth.signUp({
+        username,
+        password,
+        attributes: { email, name, preferred_username: username },
+      });
+      navigation.navigate("Confirm email", { username });
+    } catch (error) {
+      console.log("Pipipi", (error as Error).message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onSignInPress = () => {
-    navigation.navigate('Sign in');
+    navigation.navigate("Sign in");
   };
 
   const onTermsOfUsePressed = () => {
-    console.warn('onTermsOfUsePressed');
+    console.warn("onTermsOfUsePressed");
   };
 
   const onPrivacyPressed = () => {
-    console.warn('onPrivacyPressed');
+    console.warn("onPrivacyPressed");
   };
 
   return (
@@ -51,14 +72,14 @@ const SignUpScreen = () => {
           control={control}
           placeholder="Full name"
           rules={{
-            required: 'Name is required',
+            required: "Name is required",
             minLength: {
               value: 3,
-              message: 'Name should be at least 3 characters long',
+              message: "Name should be at least 3 characters long",
             },
             maxLength: {
               value: 24,
-              message: 'Name should be max 24 characters long',
+              message: "Name should be max 24 characters long",
             },
           }}
         />
@@ -68,18 +89,18 @@ const SignUpScreen = () => {
           control={control}
           placeholder="Username"
           rules={{
-            required: 'Username is required',
+            required: "Username is required",
             minLength: {
               value: 3,
-              message: 'Username should be at least 3 characters long',
+              message: "Username should be at least 3 characters long",
             },
             maxLength: {
               value: 24,
-              message: 'Username should be max 24 characters long',
+              message: "Username should be max 24 characters long",
             },
             pattern: {
               value: USERNAME_REGEX,
-              message: 'Username can only contain a-z, 0-9, _',
+              message: "Username can only contain a-z, 0-9, _",
             },
           }}
         />
@@ -88,8 +109,8 @@ const SignUpScreen = () => {
           control={control}
           placeholder="Email"
           rules={{
-            required: 'Email is required',
-            pattern: {value: EMAIL_REGEX, message: 'Email is invalid'},
+            required: "Email is required",
+            pattern: { value: EMAIL_REGEX, message: "Email is invalid" },
           }}
         />
         <FormInput
@@ -98,10 +119,10 @@ const SignUpScreen = () => {
           placeholder="Password"
           secureTextEntry
           rules={{
-            required: 'Password is required',
+            required: "Password is required",
             minLength: {
               value: 8,
-              message: 'Password should be at least 8 characters long',
+              message: "Password should be at least 8 characters long",
             },
           }}
         />
@@ -112,21 +133,21 @@ const SignUpScreen = () => {
           secureTextEntry
           rules={{
             validate: (value: string) =>
-              value === pwd || 'Password do not match',
+              value === pwd || "Password do not match",
           }}
         />
 
         <CustomButton
-          text="Register"
+          text={loading ? "Loading..." : "Register"}
           onPress={handleSubmit(onRegisterPressed)}
         />
 
         <Text style={styles.text}>
-          By registering, you confirm that you accept our{' '}
+          By registering, you confirm that you accept our{" "}
           <Text style={styles.link} onPress={onTermsOfUsePressed}>
             Terms of Use
-          </Text>{' '}
-          and{' '}
+          </Text>{" "}
+          and{" "}
           <Text style={styles.link} onPress={onPrivacyPressed}>
             Privacy Policy
           </Text>
@@ -146,17 +167,17 @@ const SignUpScreen = () => {
 
 const styles = StyleSheet.create({
   root: {
-    alignItems: 'center',
+    alignItems: "center",
     padding: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.black,
     margin: 10,
   },
   text: {
-    color: 'gray',
+    color: "gray",
     marginVertical: 10,
   },
   link: {
