@@ -13,7 +13,7 @@ import { useState } from "react";
 import Carousel from "../Carousel";
 import VideoPlayer from "../VideoPlayer";
 import { useNavigation } from "@react-navigation/native";
-import { FeedNavigationProp } from "../../navigation/types";
+import { FeedNavigationProp } from "../../types/navigation";
 
 interface IFeedPost {
   post: IPost;
