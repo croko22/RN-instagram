@@ -3,7 +3,7 @@
   "cognitoConfig": {
     "identityPoolName": "testAuthIdentityPool",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "achiev35106168",
+    "resourceNameTruncated": "achiev531f01bf",
     "userPoolName": "Achieve",
     "autoVerifiedAttributes": [
       "email"
@@ -20,7 +20,6 @@
     "passwordPolicyMinLength": 6,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
-      "preferred_username",
       "email",
       "name"
     ],
@@ -29,12 +28,15 @@
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [],
     "userpoolClientReadAttributes": [],
-    "userpoolClientLambdaRole": "Achiev35106168_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "Achiev531f01bf_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "35106168",
+    "sharedId": "531f01bf",
     "resourceName": "Achieve",
     "authSelections": "identityPoolAndUserPool",
     "serviceName": "Cognito",
+    "usernameAttributes": [
+      "email"
+    ],
     "useDefault": "manual",
     "userPoolGroups": false,
     "userPoolGroupList": [],

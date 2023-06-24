@@ -9,7 +9,7 @@ import { ForgotPasswordNavigationProp } from "../../../types/navigation";
 import { Auth } from "aws-amplify";
 
 type ForgotPasswordData = {
-  username: string;
+  email: string;
 };
 
 const ForgotPasswordScreen = () => {
@@ -21,12 +21,12 @@ const ForgotPasswordScreen = () => {
     if (loading) return;
     setLoading(true);
     try {
-      const response = await Auth.forgotPassword(data.username);
+      const response = await Auth.forgotPassword(data.email);
       Alert.alert(
         "Check your email",
         `We sent you a code to ${response.CodeDeliveryDetails.Destination}`
       );
-      navigation.navigate("New password", { username: data.username });
+      navigation.navigate("New password", { email: data.email });
     } catch (error) {
       Alert.alert("Oooops", (error as Error).message);
     } finally {
@@ -44,11 +44,11 @@ const ForgotPasswordScreen = () => {
         <Text style={styles.title}>Reset your password</Text>
 
         <FormInput
-          name="username"
+          name="email"
           control={control}
-          placeholder="Username"
+          placeholder="Email"
           rules={{
-            required: "Username is required",
+            required: "Email is required",
           }}
         />
 
