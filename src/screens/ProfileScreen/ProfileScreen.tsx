@@ -9,6 +9,7 @@ import {
   UserProfileNavigationProp,
   UserProfileRouteProp,
 } from "../../types/navigation";
+import { useAuthContext } from "../../contexts/AuthContext";
 
 const ProfileScreen = () => {
   const route = useRoute<UserProfileRouteProp | MyProfileRouteProp>();
@@ -16,7 +17,8 @@ const ProfileScreen = () => {
     UserProfileNavigationProp | MyProfileNavigationProp
   >();
   //* Is better to send an identifier than the whole object
-  const userID = route.params?.userID;
+  // const { userId: authUserId } = useAuthContext().user;
+  // const userID = route.params?.userID || authUserId;
   // const user = users.find((user) => user.id === userID);
   //*Query the user
 
