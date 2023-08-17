@@ -24,6 +24,7 @@ const ProfileScreen = () => {
 
   navigation.setOptions({ title: user.username });
   //*Pics gallery
+  //@ts-ignore
   return <FeedGridView ListHeaderComponent={ProfileHeader} data={user.posts} />;
 };
 

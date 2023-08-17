@@ -29,8 +29,8 @@ const updatedConfig = {
     ...config.oauth,
     // redirectSignIn: "achieve://",
     // redirectSignOut: "achieve://",
-    redirectSignIn: "exp://192.168.1.13:19000/--/",
-    redirectSignOut: "exp://192.168.1.13:19000/--/",
+    redirectSignIn: "exp://192.168.1.15:19000/--/",
+    redirectSignOut: "exp://192.168.1.15:19000/--/",
     urlOpener: urlOpenerExpo,
   },
 };

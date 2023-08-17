@@ -9,11 +9,18 @@
       "UnauthRoleName": "amplify-achieve-staging-220751-unauthRole",
       "StackName": "amplify-achieve-staging-220751",
       "StackId": "arn:aws:cloudformation:us-east-1:621794040120:stack/amplify-achieve-staging-220751/a27c9440-da47-11ed-96a0-127b36a75455",
-      "AmplifyAppId": "d3w22twwk4knbl"
+      "AmplifyAppId": "d3w22twwk4knbl",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-achieve-staging-220751-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
     },
     "categories": {
       "auth": {
         "Achieve": {}
+      },
+      "function": {
+        "AchievePostConfirmation": {
+          "deploymentBucketName": "amplify-achieve-staging-220751-deployment",
+          "s3Key": "amplify-builds/AchievePostConfirmation-4759705867776954796a-build.zip"
+        }
       }
     }
   }
