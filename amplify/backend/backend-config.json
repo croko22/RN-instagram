@@ -66,6 +66,17 @@
   "function": {
     "AchievePostConfirmation": {
       "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput",
+            "GraphQLAPIEndpointOutput",
+            "GraphQLAPIKeyOutput"
+          ],
+          "category": "api",
+          "resourceName": "Achieve"
+        }
+      ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
