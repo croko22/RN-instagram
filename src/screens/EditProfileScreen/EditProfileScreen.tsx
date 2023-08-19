@@ -1,17 +1,39 @@
-import { useState } from "react";
-import { View, Text, StyleSheet, Image, TextInput } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TextInput,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { useForm, Controller, Control } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
-import user from "../../assets/data/user.json";
 import colors from "../../theme/colors";
 import fonts from "../../theme/fonts";
-import { IUser } from "../../types/models";
+import {
+  DeleteUserMutation,
+  DeleteUserMutationVariables,
+  GetUserQuery,
+  GetUserQueryVariables,
+  UpdateUserMutation,
+  UpdateUserMutationVariables,
+  User,
+} from "../../API";
+import { useQuery, useMutation } from "@apollo/client";
+import { deleteUser, getUser, updateUser } from "./queries";
+import { useAuthContext } from "../../contexts/AuthContext";
+import ApiErrorMessage from "../../components/ApiErrorMessage/ApiErrorMessage";
+import { DEFAULT_USER_IMAGE } from "../../config";
+import { useNavigation } from "@react-navigation/native";
+import { Auth } from "aws-amplify";
 
 //*FORM
 const URL_REGEX = /^(ftp|http|https):\/\/[^ "]+$/;
 
 type IEditableUserFields = "name" | "username" | "website" | "bio";
-type IEditableUser = Pick<IUser, IEditableUserFields>;
+type IEditableUser = Pick<User, IEditableUserFields>;
 
 interface ICustomInput {
   control: Control<IEditableUser, object>;
@@ -38,7 +60,7 @@ const CustomInput = ({
           <Text style={styles.label}>{label}</Text>
           <View style={{ flex: 1 }}>
             <TextInput
-              value={value}
+              value={value || ""}
               onChangeText={onChange}
               onBlur={onBlur}
               style={[
@@ -60,25 +82,64 @@ const CustomInput = ({
 );
 
 const EditProfileScreen = () => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IEditableUser>({
-    defaultValues: {
-      name: user.name,
-      username: user.username,
-      website: user.website,
-      bio: user.bio,
-    },
-  });
+  const { control, handleSubmit, setValue } = useForm<IEditableUser>();
+  const navigation = useNavigation();
+  const { userId, user: authUser } = useAuthContext();
+  //*QUERY
+  const { data, loading, error } = useQuery<
+    GetUserQuery,
+    GetUserQueryVariables
+  >(getUser, { variables: { id: userId } });
+  const user = data?.getUser;
+  const [image, setImage] = useState(user?.image);
 
-  const onSubmit = (data: IEditableUser) => {
-    console.warn("Submit", data);
+  const [doUpdateUser, { loading: updateLoading, error: updateError }] =
+    useMutation<UpdateUserMutation, UpdateUserMutationVariables>(updateUser);
+
+  const [doDelete, { loading: deleteLoading, error: deleteError }] =
+    useMutation<DeleteUserMutation, DeleteUserMutationVariables>(deleteUser);
+
+  useEffect(() => {
+    if (user) {
+      setValue("name", user.name);
+      setValue("username", user.username);
+      setValue("website", user.website);
+      setValue("bio", user.bio);
+    }
+  }, [user, setValue]);
+
+  const onSubmit = async (formData: IEditableUser) => {
+    await doUpdateUser({
+      variables: {
+        input: { id: userId, ...formData, _version: user?._version },
+      },
+    });
+    navigation.goBack();
   };
 
-  //*IMAGE PICKER
-  const [image, setImage] = useState(user.image);
+  const confirmDelete = async () => {
+    Alert.alert("Delete Account", "Are you sure?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => startDeleting(),
+      },
+    ]);
+  };
+
+  const startDeleting = async () => {
+    if (!userId) return;
+    //? Delete user from database
+    await doDelete({
+      variables: { input: { id: userId, _version: user?._version } },
+    });
+    //? Delete user from cognito
+    authUser?.deleteUser((err) => {
+      if (err) console.log(err);
+      Auth.signOut();
+    });
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -88,14 +149,24 @@ const EditProfileScreen = () => {
       quality: 1,
     });
 
-    // console.log(result);
-
     if (!result.canceled) setImage(result.assets[0].uri);
   };
 
+  if (loading) return <ActivityIndicator />;
+  if (error || updateError || deleteError || !data)
+    return (
+      <ApiErrorMessage
+        title="Error fetching or updating user"
+        message={error?.message || updateError?.message || deleteError?.message}
+      />
+    );
+
   return (
     <View style={styles.page}>
-      <Image source={{ uri: image }} style={styles.avatar} />
+      <Image
+        source={{ uri: image || DEFAULT_USER_IMAGE }}
+        style={styles.avatar}
+      />
       <Text style={styles.textButton} onPress={pickImage}>
         EditProfileScreen
       </Text>
@@ -123,7 +194,7 @@ const EditProfileScreen = () => {
         name="website"
         label="Website"
         rules={{
-          required: "Website is required",
+          // required: "Website is required",
           pattern: {
             value: URL_REGEX,
             message: "Website should be a valid URL",
@@ -144,7 +215,11 @@ const EditProfileScreen = () => {
       />
 
       <Text onPress={handleSubmit(onSubmit)} style={styles.textButton}>
-        Submit
+        {updateLoading ? "Loading..." : "Save"}
+      </Text>
+
+      <Text onPress={confirmDelete} style={styles.textButtonDanger}>
+        {deleteLoading ? "Deleting..." : "DELETE USER"}
       </Text>
     </View>
   );
@@ -155,6 +230,12 @@ const styles = StyleSheet.create({
   avatar: { width: "30%", aspectRatio: 1, borderRadius: 100 },
   textButton: {
     color: colors.primary,
+    fontSize: 20,
+    fontWeight: fonts.weight.semi,
+    margin: 10,
+  },
+  textButtonDanger: {
+    color: colors.error,
     fontSize: 20,
     fontWeight: fonts.weight.semi,
     margin: 10,
