@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-import React from "react";
 import image from "./error.png";
 import colors from "../../theme/colors";
 import Button from "../Button";
@@ -40,7 +39,7 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   message: {
-    color: colors.grey,
+    color: colors.black,
     marginBottom: 10,
   },
 });
