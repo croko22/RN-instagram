@@ -1,2 +1,2 @@
 export const DEFAULT_USER_IMAGE =
-  "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png";
+  "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/images/default-user-image.png";
