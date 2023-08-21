@@ -539,6 +539,16 @@ export const schema = {
                     "properties": {}
                 },
                 {
+                    "type": "key",
+                    "properties": {
+                        "name": "byUsername",
+                        "queryField": "userByUsername",
+                        "fields": [
+                            "username"
+                        ]
+                    }
+                },
+                {
                     "type": "auth",
                     "properties": {
                         "rules": [
