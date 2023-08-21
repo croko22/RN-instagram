@@ -61,3 +61,28 @@ export const deleteUser = gql`
     }
   }
 `;
+
+export const userByUsername = gql`
+  query UserByUsername(
+    $username: String!
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    userByUsername(
+      username: $username
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        username
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
