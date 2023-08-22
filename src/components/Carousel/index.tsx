@@ -13,7 +13,7 @@ import colors from "../../theme/colors";
 
 interface ICarousel {
   images: string[];
-  onDoublePress: () => void;
+  onDoublePress?: () => void;
 }
 
 const Carousel = ({ images, onDoublePress }: ICarousel) => {
