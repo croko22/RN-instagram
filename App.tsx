@@ -5,6 +5,7 @@ import AuthContextProvider from "./src/contexts/AuthContext";
 import * as WebBrowser from "expo-web-browser";
 import { Linking, Platform } from "react-native";
 import Client from "./src/apollo/Client";
+import { MenuProvider } from "react-native-popup-menu";
 
 /**Amplify documentation has this example */
 const urlOpenerExpo = async (url: string, redirectUrl: string) => {
@@ -41,11 +42,13 @@ Amplify.configure(updatedConfig);
 
 const App = () => {
   return (
-    <AuthContextProvider>
-      <Client>
-        <Navigation />
-      </Client>
-    </AuthContextProvider>
+    <MenuProvider>
+      <AuthContextProvider>
+        <Client>
+          <Navigation />
+        </Client>
+      </AuthContextProvider>
+    </MenuProvider>
   );
 };
 
