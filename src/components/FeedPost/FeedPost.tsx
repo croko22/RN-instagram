@@ -1,38 +1,20 @@
 import { Text, View, Image, Pressable } from "react-native";
+import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { FeedNavigationProp } from "../../types/navigation";
+import { Post } from "../../API";
+import { DEFAULT_USER_IMAGE } from "../../config";
 import styles from "./styles";
 import colors from "../../theme/colors";
-import fonts from "../../theme/fonts";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Ionicicons from "react-native-vector-icons/Ionicons";
 import Feather from "react-native-vector-icons/Feather";
 import Comment from "../Comment";
 import DoublePressable from "../DoublePressable";
-import { useState } from "react";
 import Carousel from "../Carousel";
 import VideoPlayer from "../VideoPlayer";
-import { useNavigation } from "@react-navigation/native";
-import { FeedNavigationProp } from "../../types/navigation";
-import {
-  CreateLikeMutation,
-  CreateLikeMutationVariables,
-  DeleteCommentMutation,
-  DeleteCommentMutationVariables,
-  LikesForPostByUserQuery,
-  LikesForPostByUserQueryVariables,
-  Post,
-  UpdatePostMutation,
-  UpdatePostMutationVariables,
-} from "../../API";
-import { DEFAULT_USER_IMAGE } from "../../config";
+import useLikeService from "../../services/LikeService";
 import PostMenu from "./PostMenu";
-import { useMutation, useQuery } from "@apollo/client";
-import {
-  createLike,
-  deleteLike,
-  likesForPostByUser,
-  updatePost,
-} from "./queries";
-import { useAuthContext } from "../../contexts/AuthContext";
 
 interface IFeedPost {
   post: Post;
@@ -40,53 +22,12 @@ interface IFeedPost {
 }
 
 const FeedPost = ({ post, isVisible }: IFeedPost) => {
-  const { userId } = useAuthContext();
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const { toggleLike, isLiked } = useLikeService(post);
 
-  const [doCreateLike] = useMutation<
-    CreateLikeMutation,
-    CreateLikeMutationVariables
-  >(createLike, {
-    variables: { input: { userID: userId, postID: post.id } },
-    refetchQueries: ["LikesForPostByUser"],
-  });
-
-  const [doDeleteLike] = useMutation<
-    DeleteCommentMutation,
-    DeleteCommentMutationVariables
-  >(deleteLike, {
-    refetchQueries: ["LikesForPostByUser"],
-  });
-
-  const [doUpdatePost] = useMutation<
-    UpdatePostMutation,
-    UpdatePostMutationVariables
-  >(updatePost);
-
-  const { data: usersLikeData } = useQuery<
-    LikesForPostByUserQuery,
-    LikesForPostByUserQueryVariables
-  >(likesForPostByUser, {
-    variables: { postID: post.id, userID: { eq: userId } },
-  });
-  const userLike = (usersLikeData?.likesForPostByUser?.items || []).filter(
-    (like) => !like?._deleted
-  )?.[0];
   const postLikes = (post.Likes?.items || []).filter((like) => !like?._deleted);
 
   const navigation = useNavigation<FeedNavigationProp>();
-
-  const incrementNofLikes = (amount: 1 | -1) => {
-    doUpdatePost({
-      variables: {
-        input: {
-          id: post.id,
-          _version: post._version,
-          nofLikes: post.nofLikes + amount,
-        },
-      },
-    });
-  };
 
   //? There are two ways to navigate to a screen, navigate and push (navigate is the preferred way)
   const navigateToUser = () => {
@@ -100,18 +41,6 @@ const FeedPost = ({ post, isVisible }: IFeedPost) => {
 
   const navigateToLikes = () => {
     navigation.navigate("PostLikes", { id: post.id });
-  };
-
-  const toggleLike = () => {
-    if (userLike) {
-      doDeleteLike({
-        variables: { input: { id: userLike.id, _version: userLike._version } },
-      });
-      incrementNofLikes(-1);
-    } else {
-      doCreateLike();
-      incrementNofLikes(1);
-    }
   };
 
   let content = null;
@@ -145,17 +74,16 @@ const FeedPost = ({ post, isVisible }: IFeedPost) => {
         <PostMenu post={post} />
       </View>
       {/* Content */}
-
       {content}
       {/* Footer */}
       <View style={styles.footer}>
         <View style={styles.iconContainer}>
           <Pressable onPress={toggleLike}>
             <AntDesign
-              name={userLike ? "heart" : "hearto"}
+              name={isLiked ? "heart" : "hearto"}
               size={24}
               style={styles.icon}
-              color={userLike ? colors.red : colors.black}
+              color={isLiked ? colors.red : colors.black}
             />
           </Pressable>
           <Ionicicons
