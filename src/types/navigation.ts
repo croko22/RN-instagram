@@ -59,9 +59,14 @@ export type MyProfileRouteProp = RouteProp<
 export type HomeStackNavigatorParamList = {
   Feed: undefined;
   UserProfile: { userID: string };
-  Comments: { postID: string };
   UpdatePost: { id: string };
+  PostLikes: { id: string };
 };
+
+export type PostLikesRouteProp = RouteProp<
+  HomeStackNavigatorParamList,
+  "PostLikes"
+>;
 
 export type UpdatePostRouteProp = RouteProp<
   HomeStackNavigatorParamList,
