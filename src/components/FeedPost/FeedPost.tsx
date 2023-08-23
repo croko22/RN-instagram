@@ -12,9 +12,27 @@ import Carousel from "../Carousel";
 import VideoPlayer from "../VideoPlayer";
 import { useNavigation } from "@react-navigation/native";
 import { FeedNavigationProp } from "../../types/navigation";
-import { Post } from "../../API";
+import {
+  CreateLikeMutation,
+  CreateLikeMutationVariables,
+  DeleteCommentMutation,
+  DeleteCommentMutationVariables,
+  LikesForPostByUserQuery,
+  LikesForPostByUserQueryVariables,
+  Post,
+  UpdatePostMutation,
+  UpdatePostMutationVariables,
+} from "../../API";
 import { DEFAULT_USER_IMAGE } from "../../config";
 import PostMenu from "./PostMenu";
+import { useMutation, useQuery } from "@apollo/client";
+import {
+  createLike,
+  deleteLike,
+  likesForPostByUser,
+  updatePost,
+} from "./queries";
+import { useAuthContext } from "../../contexts/AuthContext";
 
 interface IFeedPost {
   post: Post;
@@ -22,9 +40,53 @@ interface IFeedPost {
 }
 
 const FeedPost = ({ post, isVisible }: IFeedPost) => {
+  const { userId } = useAuthContext();
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+
+  const [doCreateLike] = useMutation<
+    CreateLikeMutation,
+    CreateLikeMutationVariables
+  >(createLike, {
+    variables: { input: { userID: userId, postID: post.id } },
+    refetchQueries: ["LikesForPostByUser"],
+  });
+
+  const [doDeleteLike] = useMutation<
+    DeleteCommentMutation,
+    DeleteCommentMutationVariables
+  >(deleteLike, {
+    refetchQueries: ["LikesForPostByUser"],
+  });
+
+  const [doUpdatePost] = useMutation<
+    UpdatePostMutation,
+    UpdatePostMutationVariables
+  >(updatePost);
+
+  const { data: usersLikeData } = useQuery<
+    LikesForPostByUserQuery,
+    LikesForPostByUserQueryVariables
+  >(likesForPostByUser, {
+    variables: { postID: post.id, userID: { eq: userId } },
+  });
+  const userLike = (usersLikeData?.likesForPostByUser?.items || []).filter(
+    (like) => !like?._deleted
+  )?.[0];
+  const postLikes = (post.Likes?.items || []).filter((like) => !like?._deleted);
+
   const navigation = useNavigation<FeedNavigationProp>();
+
+  const incrementNofLikes = (amount: 1 | -1) => {
+    doUpdatePost({
+      variables: {
+        input: {
+          id: post.id,
+          _version: post._version,
+          nofLikes: post.nofLikes + amount,
+        },
+      },
+    });
+  };
 
   //? There are two ways to navigate to a screen, navigate and push (navigate is the preferred way)
   const navigateToUser = () => {
@@ -36,23 +98,34 @@ const FeedPost = ({ post, isVisible }: IFeedPost) => {
     navigation.navigate("Comments", { postID: post.id });
   };
 
+  const navigateToLikes = () => {
+    navigation.navigate("PostLikes", { id: post.id });
+  };
+
+  const toggleLike = () => {
+    if (userLike) {
+      doDeleteLike({
+        variables: { input: { id: userLike.id, _version: userLike._version } },
+      });
+      incrementNofLikes(-1);
+    } else {
+      doCreateLike();
+      incrementNofLikes(1);
+    }
+  };
+
   let content = null;
   if (post.image) {
     content = (
-      <DoublePressable onDoublePress={() => setIsLiked(!isLiked)}>
+      <DoublePressable onDoublePress={toggleLike}>
         <Image source={{ uri: post.image }} style={styles.image} />
       </DoublePressable>
     );
   } else if (post.images) {
-    content = (
-      <Carousel
-        images={post.images}
-        onDoublePress={() => setIsLiked(!isLiked)}
-      />
-    );
+    content = <Carousel images={post.images} onDoublePress={toggleLike} />;
   } else if (post.video) {
     content = (
-      <DoublePressable onDoublePress={() => setIsLiked(!isLiked)}>
+      <DoublePressable onDoublePress={toggleLike}>
         <VideoPlayer uri={post.video} paused={!isVisible} />
       </DoublePressable>
     );
@@ -77,12 +150,12 @@ const FeedPost = ({ post, isVisible }: IFeedPost) => {
       {/* Footer */}
       <View style={styles.footer}>
         <View style={styles.iconContainer}>
-          <Pressable onPress={() => setIsLiked(!isLiked)}>
+          <Pressable onPress={toggleLike}>
             <AntDesign
-              name={isLiked ? "heart" : "hearto"}
+              name={userLike ? "heart" : "hearto"}
               size={24}
               style={styles.icon}
-              color={isLiked ? colors.red : colors.black}
+              color={userLike ? colors.red : colors.black}
             />
           </Pressable>
           <Ionicicons
@@ -105,10 +178,20 @@ const FeedPost = ({ post, isVisible }: IFeedPost) => {
           />
         </View>
         {/* Likes */}
-        <Text style={styles.text}>
-          Liked by <Text style={styles.bold}>felipe</Text> and{" "}
-          <Text style={styles.bold}>{post.nofLikes} others</Text>
-        </Text>
+        {postLikes.length === 0 ? (
+          <Text>Be the first to like the post</Text>
+        ) : (
+          <Text style={styles.text} onPress={navigateToLikes}>
+            Liked by{" "}
+            <Text style={styles.bold}>{postLikes[0]?.User?.username}</Text>
+            {postLikes.length > 1 && (
+              <>
+                {" "}
+                and <Text style={styles.bold}>{post.nofLikes - 1} others</Text>
+              </>
+            )}
+          </Text>
+        )}
         {/* Post description */}
         <Text
           style={styles.text}
