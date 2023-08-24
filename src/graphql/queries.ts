@@ -22,20 +22,24 @@ export const getLike = /* GraphQL */ `
         Posts {
           nextToken
           startedAt
+          __typename
         }
         Comments {
           nextToken
           startedAt
+          __typename
         }
         Likes {
           nextToken
           startedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       Post {
         id
@@ -62,26 +66,31 @@ export const getLike = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Likes {
           nextToken
           startedAt
+          __typename
         }
         Comments {
           nextToken
           startedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -112,6 +121,7 @@ export const listLikes = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Post {
           id
@@ -127,15 +137,18 @@ export const listLikes = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -172,6 +185,7 @@ export const syncLikes = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Post {
           id
@@ -187,15 +201,18 @@ export const syncLikes = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -234,6 +251,7 @@ export const likesByUserID = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Post {
           id
@@ -249,15 +267,18 @@ export const likesByUserID = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -298,6 +319,7 @@ export const likesForPostByUser = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Post {
           id
@@ -313,15 +335,18 @@ export const likesForPostByUser = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -346,20 +371,24 @@ export const getComment = /* GraphQL */ `
         Posts {
           nextToken
           startedAt
+          __typename
         }
         Comments {
           nextToken
           startedAt
+          __typename
         }
         Likes {
           nextToken
           startedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       Post {
         id
@@ -386,26 +415,31 @@ export const getComment = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Likes {
           nextToken
           startedAt
+          __typename
         }
         Comments {
           nextToken
           startedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -437,6 +471,7 @@ export const listComments = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Post {
           id
@@ -452,15 +487,18 @@ export const listComments = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -498,6 +536,7 @@ export const syncComments = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Post {
           id
@@ -513,15 +552,18 @@ export const syncComments = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -561,6 +603,7 @@ export const commentsByUserID = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Post {
           id
@@ -576,27 +619,30 @@ export const commentsByUserID = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
-export const commentsByPostID = /* GraphQL */ `
-  query CommentsByPostID(
+export const commentsByPost = /* GraphQL */ `
+  query CommentsByPost(
     $postID: ID!
     $sortDirection: ModelSortDirection
     $filter: ModelCommentFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    commentsByPostID(
+    commentsByPost(
       postID: $postID
       sortDirection: $sortDirection
       filter: $filter
@@ -624,6 +670,7 @@ export const commentsByPostID = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Post {
           id
@@ -639,15 +686,18 @@ export const commentsByPostID = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -676,20 +726,24 @@ export const getPost = /* GraphQL */ `
         Posts {
           nextToken
           startedAt
+          __typename
         }
         Comments {
           nextToken
           startedAt
+          __typename
         }
         Likes {
           nextToken
           startedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       Likes {
         items {
@@ -701,9 +755,11 @@ export const getPost = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         nextToken
         startedAt
+        __typename
       }
       Comments {
         items {
@@ -716,15 +772,18 @@ export const getPost = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         nextToken
         startedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -760,23 +819,28 @@ export const listPosts = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Likes {
           nextToken
           startedAt
+          __typename
         }
         Comments {
           nextToken
           startedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -818,23 +882,28 @@ export const syncPosts = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Likes {
           nextToken
           startedAt
+          __typename
         }
         Comments {
           nextToken
           startedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -878,23 +947,28 @@ export const postsByUserID = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         Likes {
           nextToken
           startedAt
+          __typename
         }
         Comments {
           nextToken
           startedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -926,9 +1000,11 @@ export const getUser = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         nextToken
         startedAt
+        __typename
       }
       Comments {
         items {
@@ -941,9 +1017,11 @@ export const getUser = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         nextToken
         startedAt
+        __typename
       }
       Likes {
         items {
@@ -955,15 +1033,18 @@ export const getUser = /* GraphQL */ `
           _version
           _deleted
           _lastChangedAt
+          __typename
         }
         nextToken
         startedAt
+        __typename
       }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -988,23 +1069,28 @@ export const listUsers = /* GraphQL */ `
         Posts {
           nextToken
           startedAt
+          __typename
         }
         Comments {
           nextToken
           startedAt
+          __typename
         }
         Likes {
           nextToken
           startedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1035,23 +1121,28 @@ export const syncUsers = /* GraphQL */ `
         Posts {
           nextToken
           startedAt
+          __typename
         }
         Comments {
           nextToken
           startedAt
+          __typename
         }
         Likes {
           nextToken
           startedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;
@@ -1084,23 +1175,28 @@ export const userByUsername = /* GraphQL */ `
         Posts {
           nextToken
           startedAt
+          __typename
         }
         Comments {
           nextToken
           startedAt
+          __typename
         }
         Likes {
           nextToken
           startedAt
+          __typename
         }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
+        __typename
       }
       nextToken
       startedAt
+      __typename
     }
   }
 `;

@@ -214,6 +214,7 @@ export const schema = {
                     "type": "key",
                     "properties": {
                         "name": "byPost",
+                        "queryField": "commentsByPost",
                         "fields": [
                             "postID"
                         ]
@@ -571,6 +572,6 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "codegenVersion": "3.4.3",
+    "codegenVersion": "3.4.4",
     "version": "a67aae66d46b626b882f225d25759f32"
 };
