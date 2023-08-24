@@ -2,12 +2,19 @@ import { useState } from "react";
 import { View, Image, Text, TextInput, StyleSheet } from "react-native";
 import colors from "../../theme/colors";
 import fonts from "../../theme/fonts";
+import useCommentService from "../../services/CommentService/CommentService";
 
-const Input = () => {
+interface IInput {
+  postId: string;
+}
+
+const Input = ({ postId }: IInput) => {
   const [comment, setComment] = useState("");
 
-  const onPost = () => {
-    console.warn("Post comment: ", comment);
+  const { onCreateComment } = useCommentService(postId);
+
+  const onPost = async () => {
+    onCreateComment(comment);
     setComment("");
   };
 
