@@ -36,7 +36,7 @@ const FeedPost = ({ post, isVisible }: IFeedPost) => {
   };
 
   const navigateToComments = () => {
-    navigation.navigate("Comments", { postID: post.id });
+    navigation.navigate("Comments", { postId: post.id });
   };
 
   const navigateToLikes = () => {
